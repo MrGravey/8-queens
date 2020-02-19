@@ -1,6 +1,6 @@
 import random
 
-QUEEN_BASES = [1, 2, 3, 4, 5, 6, 7, 8]
+QUEEN_BASES = [0, 1, 2, 3, 4, 5, 6, 7]
 
 class DNA(): 
 
@@ -9,13 +9,22 @@ class DNA():
     self.DNA = []
     self.Bases = Bases
     self.Fitness = -1
-    if(len(DNA) == self.MaxLen):
-      self.DNA = DNA 
-    
-  def set(self, DNA: list) -> bool:
-    if(len(DNA) != self.MaxLen): return False
-    self.DNA = DNA
+
+    # check if Bases exist in given DNA
+      
+    if(len(DNA) == self.MaxLen and self._containsBases(DNA)):
+      self.DNA = DNA
+     
+  def _containsBases(self, DNA) -> bool:
+    for x in DNA:
+      if(x not in self.Bases): return False
     return True
+
+  def set(self, DNA: list) -> bool:
+    if(len(DNA) == self.MaxLen and self._containsBases(DNA)):
+      self.DNA = DNA
+      return True
+    return False
 
   def setFitness(self, Fitness: int) -> bool:
     self.Fitness = Fitness
@@ -41,7 +50,7 @@ class DNA():
 
   def randomMutate(self) -> bool:
     if(len(self.Bases) == 0): return False
-    randIndex = random.randint(0, self.MaxLen)
-    randBase = random.randint(0, len(self.Bases))
+    randIndex = random.randint(0, self.MaxLen-1)
+    randBase = random.randint(0, len(self.Bases)-1)
     self.DNA[randIndex] = randBase
     return True
