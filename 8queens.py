@@ -1,4 +1,10 @@
-from DNA import QUEEN_BASES, DNA
+import random
+from DNA import DNA
+from Generation import Generation
+
+QUEEN_BASES = [0, 1, 2, 3, 4, 5, 6, 7]
+MUT_CHANCE = 0.10
+POPULATION_SIZE = 10
 
 def isCollision(x1: int, y1: int, x2: int, y2: int):
   # Vertical check (should never occurr)
@@ -37,24 +43,28 @@ def fitnessFunc(individual: DNA) -> int:
 
   return fitness
 
-def generateChild(parent1, parent2, crossPos):
+def generateChild(parent1: DNA, parent2: DNA) -> DNA:
+  crossPos = random.randint(1, len(parent1.get())-2)
   child = DNA(parent1.leftSplit(crossPos) + parent2.rightSplit(crossPos), QUEEN_BASES)
-  print(child.get())
   child.setFitness(fitnessFunc(child))
-  print(child.getFitness())
+  if(random.random() <= MUT_CHANCE):
+    child.randomMutate()
 
-parent1 = DNA([0, 1, 2, 3, 4, 5, 6, 7], QUEEN_BASES)
-parent2 = DNA([4, 5, 7, 0, 4, 3, 2, 5], QUEEN_BASES)
+  return child
 
-parent1.setFitness(fitnessFunc(parent1))
-parent2.setFitness(fitnessFunc(parent2))
-print(parent1.getFitness())
-print(parent2.getFitness())
+def generateRandomDNA() -> DNA:
+  newDNA = []
+  for base in range(0, 8):
+    newDNA.append(QUEEN_BASES[random.randint(0, 7)])
 
-print(parent1.get())
-print(parent2.get())
+  newDNA = DNA(newDNA, QUEEN_BASES)
+  newDNA.setFitness(fitnessFunc(newDNA))
+  return newDNA
 
-x = 3
 
-generateChild(parent1, parent2, x)
+Gen0 = Generation([], POPULATION_SIZE)
+for x in range(0, POPULATION_SIZE):
+  Gen0.add(generateRandomDNA())
+
+print(Gen0.size())
 

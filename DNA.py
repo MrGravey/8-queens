@@ -1,7 +1,5 @@
 import random
 
-QUEEN_BASES = [0, 1, 2, 3, 4, 5, 6, 7]
-
 class DNA(): 
 
   def __init__(self, DNA=[], Bases=set, MaxLen=8):
