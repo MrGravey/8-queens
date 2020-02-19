@@ -8,6 +8,7 @@ class DNA():
     self.MaxLen = MaxLen
     self.DNA = []
     self.Bases = Bases
+    self.Fitness = -1
     if(len(DNA) == self.MaxLen):
       self.DNA = DNA 
     
@@ -16,8 +17,15 @@ class DNA():
     self.DNA = DNA
     return True
 
+  def setFitness(self, Fitness: int) -> bool:
+    self.Fitness = Fitness
+    return True
+
   def get(self) -> list:
     return self.DNA
+
+  def getFitness(self) -> int:
+    return self.Fitness
   
   def leftSplit(self, index: int) -> list:
     leftSplit = []
@@ -41,6 +49,8 @@ class DNA():
 def generateChild(parent1, parent2, crossPos):
   child = DNA(parent1.leftSplit(crossPos) + parent2.rightSplit(crossPos), QUEEN_BASES)
   print(child.get())
+  child.setFitness(12)
+  print(child.getFitness())
 
 parent1 = DNA([1, 2, 3, 4, 5, 6, 7 ,8], QUEEN_BASES)
 parent2 = DNA([4, 5, 7, 8, 4, 3, 2, 5], QUEEN_BASES)
