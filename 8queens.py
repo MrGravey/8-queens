@@ -43,8 +43,7 @@ def fitnessFunc(individual: DNA) -> int:
 
   return fitness
 
-def generateChild(parent1: DNA, parent2: DNA) -> DNA:
-  crossPos = random.randint(1, len(parent1.get())-2)
+def generateChild(parent1: DNA, parent2: DNA, crossPos: int) -> DNA:
   child = DNA(parent1.leftSplit(crossPos) + parent2.rightSplit(crossPos), QUEEN_BASES)
   child.setFitness(fitnessFunc(child))
   if(random.random() <= MUT_CHANCE):
@@ -66,5 +65,9 @@ Gen0 = Generation([], POPULATION_SIZE)
 for x in range(0, POPULATION_SIZE):
   Gen0.add(generateRandomDNA())
 
-print(Gen0.size())
+rand = random.random()
+print(rand)
+print(Gen0.getSelectionIndex(rand))
+print(Gen0.getFitness())
+print(Gen0.getAverageFitness())
 
