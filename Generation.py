@@ -21,7 +21,9 @@ class Generation():
       chance = x.getFitness()/generationFitness
       self.SelectionChance.append(chance)
     return True
-      
+
+  def generateSelectionChance(self):
+    self._generateSelectionChance()
 
   def add(self, DNA: DNA) -> bool:
     if(self.CurrSize >= self.MaxSize): return False
@@ -37,6 +39,9 @@ class Generation():
 
   def size(self):
     return self.CurrSize
+
+  def isEmpty(self):
+    return True if self.CurrSize <=0 else False
 
   def isFull(self):
     if(self.CurrSize >= self.MaxSize): return True
