@@ -47,10 +47,9 @@ def fitnessFunc(individual: DNA) -> int:
 
 def generateChild(parent1: DNA, parent2: DNA, crossPos: int) -> DNA:
   child = DNA(parent1.leftSplit(crossPos) + parent2.rightSplit(crossPos), QUEEN_BASES)
-  child.setFitness(fitnessFunc(child))
   if(random.random() <= MUT_CHANCE):
     child.randomMutate()
-
+  child.setFitness(fitnessFunc(child))
   return child
 
 def generateRandomDNA() -> DNA:
@@ -101,7 +100,7 @@ if(goalDNA is not None):
       if(goalDNA[col] == row):
         print("Q|", end='')
       else:
-        print(" |", end='')
+        print("-|", end='')
     print()
 
 
