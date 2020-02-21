@@ -4,7 +4,9 @@ from Generation import Generation
 
 QUEEN_BASES = [0, 1, 2, 3, 4, 5, 6, 7]
 MUT_CHANCE = 0.10
-POPULATION_SIZE = 10
+POPULATION_SIZE = 100
+# Maximum number of queens collisions
+MAX_FITNESS = 28
 
 def isCollision(x1: int, y1: int, x2: int, y2: int):
   # Vertical check (should never occurr)
@@ -41,10 +43,9 @@ def fitnessFunc(individual: DNA) -> int:
 
     currIndex += 1
 
-  return fitness
+  return MAX_FITNESS - fitness
 
-def generateChild(parent1: DNA, parent2: DNA) -> DNA:
-  crossPos = random.randint(1, len(parent1.get())-2)
+def generateChild(parent1: DNA, parent2: DNA, crossPos: int) -> DNA:
   child = DNA(parent1.leftSplit(crossPos) + parent2.rightSplit(crossPos), QUEEN_BASES)
   child.setFitness(fitnessFunc(child))
   if(random.random() <= MUT_CHANCE):
@@ -62,9 +63,45 @@ def generateRandomDNA() -> DNA:
   return newDNA
 
 
-Gen0 = Generation([], POPULATION_SIZE)
+oldGen = Generation([], POPULATION_SIZE)
 for x in range(0, POPULATION_SIZE):
-  Gen0.add(generateRandomDNA())
+  oldGen.add(generateRandomDNA())
 
-print(Gen0.size())
+goalDNA = None
+
+
+count = 0
+isGoal = False
+while(not isGoal):
+  print("total: " + str(oldGen.getFitness()) + " | avg: " + str(oldGen.getAverageFitness()))
+  newGen = Generation([], POPULATION_SIZE)
+  while(not newGen.isFull()):
+    parent1 = oldGen.get()[oldGen.getSelectionIndex(random.random())]
+    parent2 = oldGen.get()[oldGen.getSelectionIndex(random.random())]
+    crossPot = random.randint(0, len(QUEEN_BASES)-1)
+    child = generateChild(parent1, parent2, crossPot)
+    if(child.getFitness() >= MAX_FITNESS): 
+      goalDNA = child.get()
+      isGoal = True
+    newGen.add(child) 
+    child = generateChild(parent2, parent1, crossPot)
+    if(child.getFitness() >= MAX_FITNESS): 
+      goalDNA = child.get()
+      isGoal = True
+    newGen.add(child)
+
+  oldGen = newGen
+  count += 1
+
+print("Generations: " + str(count))
+if(goalDNA is not None):
+  for row in range(0, 8):
+    print("|", end='')
+    for col in range(0, 8):
+      if(goalDNA[col] == row):
+        print("Q|", end='')
+      else:
+        print(" |", end='')
+    print()
+
 
