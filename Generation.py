@@ -29,7 +29,6 @@ class Generation():
     if(self.CurrSize >= self.MaxSize): return False
     
     self.Generation.append(DNA)
-    self._generateSelectionChance()
     self.CurrSize += 1
     self._generateSelectionChance()
     return True
