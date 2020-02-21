@@ -77,11 +77,12 @@ def printBoard(individual: DNA):
 
 
 # Genetic Algorithm
-def solve(oldGen: Generation, populationSize: int, mutChance: float):
+def solve(oldGen: Generation, populationSize: int, mutChance: float) -> DNA:
   goalDNA = None
+  genCountMax = 100000//oldGen.size()
   genCount = 0
   isGoal = False
-  while(not isGoal):
+  while(not isGoal and genCount < genCountMax):
     print(str(oldGen.getAverageFitness()))
     newGen = Generation([], populationSize)
     while(not newGen.isFull()):
@@ -103,5 +104,5 @@ def solve(oldGen: Generation, populationSize: int, mutChance: float):
     genCount += 1
 
   print("Generations: " + str(genCount))
-  printBoard(goalDNA)
+  return goalDNA
 
