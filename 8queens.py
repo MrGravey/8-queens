@@ -8,6 +8,7 @@ POPULATION_SIZE = 100
 # Maximum number of queens collisions
 MAX_FITNESS = 28
 
+# Checks for collisions between points(row, col)
 def isCollision(x1: int, y1: int, x2: int, y2: int):
   # Vertical check (should never occurr)
   if(x1 == x2): return True
@@ -23,6 +24,7 @@ def isCollision(x1: int, y1: int, x2: int, y2: int):
   # No collision
   return False
 
+# Generates the fitness score of a DNA
 def fitnessFunc(individual: DNA) -> int:
   DNA = individual.get()
   maxIndex = len(DNA)
@@ -45,6 +47,7 @@ def fitnessFunc(individual: DNA) -> int:
 
   return MAX_FITNESS - fitness
 
+# Generates a new child DNA from two parents swapping DNA from both at a DNA cross position.
 def generateChild(parent1: DNA, parent2: DNA, crossPos: int) -> DNA:
   child = DNA(parent1.leftSplit(crossPos) + parent2.rightSplit(crossPos), QUEEN_BASES)
   if(random.random() <= MUT_CHANCE):
@@ -52,6 +55,7 @@ def generateChild(parent1: DNA, parent2: DNA, crossPos: int) -> DNA:
   child.setFitness(fitnessFunc(child))
   return child
 
+# Generates a random DNA
 def generateRandomDNA() -> DNA:
   newDNA = []
   for base in range(0, 8):
@@ -61,7 +65,20 @@ def generateRandomDNA() -> DNA:
   newDNA.setFitness(fitnessFunc(newDNA))
   return newDNA
 
+# Prints the queen's board setup
+def printBoard(individual: DNA):
+  if(individual is not None):
+    for row in range(0, len(individual)):
+      print("|", end='')
+      for col in range(0, len(individual)):
+        if(individual[col] == row):
+          print("Q|", end='')
+        else:
+          print("-|", end='')
+      print()
 
+
+# Initial Generation
 oldGen = Generation([], POPULATION_SIZE)
 for x in range(0, POPULATION_SIZE):
   oldGen.add(generateRandomDNA())
@@ -69,7 +86,8 @@ for x in range(0, POPULATION_SIZE):
 goalDNA = None
 
 
-count = 0
+# Genetic Algorithm
+genCount = 0
 isGoal = False
 while(not isGoal):
   print("total: " + str(oldGen.getFitness()) + " | avg: " + str(oldGen.getAverageFitness()))
@@ -90,17 +108,8 @@ while(not isGoal):
     newGen.add(child)
 
   oldGen = newGen
-  count += 1
+  genCount += 1
 
-print("Generations: " + str(count))
-if(goalDNA is not None):
-  for row in range(0, 8):
-    print("|", end='')
-    for col in range(0, 8):
-      if(goalDNA[col] == row):
-        print("Q|", end='')
-      else:
-        print("-|", end='')
-    print()
-
+print("Generations: " + str(genCount))
+printBoard(goalDNA)
 
