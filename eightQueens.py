@@ -3,8 +3,6 @@ from DNA import DNA
 from Generation import Generation
 
 QUEEN_BASES = [0, 1, 2, 3, 4, 5, 6, 7]
-MUT_CHANCE = 0.10
-POPULATION_SIZE = 100
 # Maximum number of queens collisions
 MAX_FITNESS = 28
 
@@ -48,9 +46,9 @@ def fitnessFunc(individual: DNA) -> int:
   return MAX_FITNESS - fitness
 
 # Generates a new child DNA from two parents swapping DNA from both at a DNA cross position.
-def generateChild(parent1: DNA, parent2: DNA, crossPos: int) -> DNA:
+def generateChild(parent1: DNA, parent2: DNA, crossPos: int, mutChance: float) -> DNA:
   child = DNA(parent1.leftSplit(crossPos) + parent2.rightSplit(crossPos), QUEEN_BASES)
-  if(random.random() <= MUT_CHANCE):
+  if(random.random() <= mutChance):
     child.randomMutate()
   child.setFitness(fitnessFunc(child))
   return child
@@ -78,38 +76,32 @@ def printBoard(individual: DNA):
       print()
 
 
-# Initial Generation
-oldGen = Generation([], POPULATION_SIZE)
-for x in range(0, POPULATION_SIZE):
-  oldGen.add(generateRandomDNA())
-
-goalDNA = None
-
-
 # Genetic Algorithm
-genCount = 0
-isGoal = False
-while(not isGoal):
-  print("total: " + str(oldGen.getFitness()) + " | avg: " + str(oldGen.getAverageFitness()))
-  newGen = Generation([], POPULATION_SIZE)
-  while(not newGen.isFull()):
-    parent1 = oldGen.get()[oldGen.getSelectionIndex(random.random())]
-    parent2 = oldGen.get()[oldGen.getSelectionIndex(random.random())]
-    crossPot = random.randint(0, len(QUEEN_BASES)-1)
-    child = generateChild(parent1, parent2, crossPot)
-    if(child.getFitness() >= MAX_FITNESS): 
-      goalDNA = child.get()
-      isGoal = True
-    newGen.add(child) 
-    child = generateChild(parent2, parent1, crossPot)
-    if(child.getFitness() >= MAX_FITNESS): 
-      goalDNA = child.get()
-      isGoal = True
-    newGen.add(child)
+def solve(oldGen: Generation, populationSize: int, mutChance: float):
+  goalDNA = None
+  genCount = 0
+  isGoal = False
+  while(not isGoal):
+    print(str(oldGen.getAverageFitness()))
+    newGen = Generation([], populationSize)
+    while(not newGen.isFull()):
+      parent1 = oldGen.get()[oldGen.getSelectionIndex(random.random())]
+      parent2 = oldGen.get()[oldGen.getSelectionIndex(random.random())]
+      crossPot = random.randint(0, len(QUEEN_BASES)-1)
+      child = generateChild(parent1, parent2, crossPot, mutChance)
+      if(child.getFitness() >= MAX_FITNESS): 
+        goalDNA = child.get()
+        isGoal = True
+      newGen.add(child) 
+      child = generateChild(parent2, parent1, crossPot, mutChance)
+      if(child.getFitness() >= MAX_FITNESS): 
+        goalDNA = child.get()
+        isGoal = True
+      newGen.add(child)
 
-  oldGen = newGen
-  genCount += 1
+    oldGen = newGen
+    genCount += 1
 
-print("Generations: " + str(genCount))
-printBoard(goalDNA)
+  print("Generations: " + str(genCount))
+  printBoard(goalDNA)
 
