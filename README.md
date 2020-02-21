@@ -1,4 +1,4 @@
-#8-queens using Genetic Algorithms
+# 8-queens using Genetic Algorithms
 
 Solves for the 8-queens problem using genetic algorithms.
 
